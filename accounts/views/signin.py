@@ -1,9 +1,10 @@
 from django.views.generic import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
 
 from accounts.forms import SignInForm
-
 
 class SignInView(View):
     """ User registration view """
@@ -24,6 +25,9 @@ class SignInView(View):
             user = authenticate(email=email, password=password)
             if user:
                 login(request, user)
-                return redirect("calendarapp:calendar")
+                if user.is_staff:
+                    return HttpResponseRedirect(reverse_lazy("calendarapp:calendar"))
+                else:
+                    return HttpResponseRedirect(reverse_lazy("student:student-dashboard"))
         context = {"form": forms}
         return render(request, self.template_name, context)

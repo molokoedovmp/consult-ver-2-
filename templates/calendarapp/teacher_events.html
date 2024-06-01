@@ -1,0 +1,63 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Мероприятия Учителя{% endblock title %}
+
+{% block breadcrumb %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Мероприятия и их участники</h3>
+            <div class="accordion" id="eventAccordion">
+                {% for event in events %}
+                <div class="card">
+                    <div class="card-header" id="heading{{ event.id }}">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ event.id }}" aria-expanded="true" aria-controls="collapse{{ event.id }}">
+                                {{ event.title }}
+                            </button>
+                        </h2>
+                    </div>
+                    <div id="collapse{{ event.id }}" class="collapse" aria-labelledby="heading{{ event.id }}" data-parent="#eventAccordion">
+                        <div class="card-body">
+                            <p>{{ event.description }}</p>
+                            <p><strong>From:</strong> {{ event.start_time }}</p>
+                            <p><strong>To:</strong> {{ event.end_time }}</p>
+                            <h5>Участники:</h5>
+                            <ul class="list-group">
+                                {% for member in event.events.all %}
+                                <li class="list-group-item">
+                                    {{ member.user.first_name }} {{ member.user.last_name }} - {{ member.user.email }}
+                                    <form method="post" action="{% url 'calendarapp:remove_event_member' member.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                    </form>
+                                </li>
+                                {% empty %}
+                                <li class="list-group-item">Нет участников.</li>
+                                {% endfor %}
+                            </ul>
+                            <h5>Добавить участника:</h5>
+                            <form method="post" action="{% url 'calendarapp:add_eventmember' event.id %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="user">Пользователь</label>
+                                    <select name="user" id="user" class="form-control">
+                                        {% for user in users %}
+                                        <option value="{{ user.id }}">{{ user.first_name }} {{ user.last_name }} - {{ user.email }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Добавить</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>Нет мероприятий.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumb %}

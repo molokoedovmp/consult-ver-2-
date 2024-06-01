@@ -1,0 +1,50 @@
+{% extends 'studentapp/base/base.html' %}
+{% load static %}
+
+{% block title %}Users{% endblock title %}
+
+{% block breadcrumb %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Поисковая строка -->
+        <div class="col-md-12">
+            <p>Type some text to search:</p>
+            <input type="text" class="form-control Search" placeholder="Search User name:" style="margin-bottom: 20px;">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="list-unstyled">
+                {% for user in staff_users %}
+                    <li class="media border p-3 mb-3 rounded shadow-sm">
+                        <a href="{% url 'student:user_detail' user.id %}" class="d-flex align-items-center">
+                            {% comment %} <img src="{{ user.image.url }}" alt="User Image" class="mr-3" style="width:60px;height:60px;border-radius:50%;"> {% endcomment %}
+                            <img src="https://img.freepik.com/free-vector/illustration-of-user-avatar-icon_53876-5907.jpg?w=740&t=st=1716310936~exp=1716311536~hmac=21211d8cf3489009a5b18dadb5f7e44028ee0acc3cce9ea0c5374f699ba6df3f" alt="User Image" class="mr-3" style="width:60px;height:60px;border-radius:50%;">
+                            <div class="media-body">
+                                <h5 class="mt-0 mb-1">{{ user.first_name }} {{ user.last_name }}</h5>
+                                Email: {{ user.email }}<br>
+                                Date Joined: {{ user.date_joined }}<br>
+                                Last Updated: {{ user.last_updated }}
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumb %}
+
+{% block extrascripts %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script>
+$(document).ready(function(){
+  $(".Search").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("li.media").filter(function() {
+      $(this).toggle($(this).find("h5").text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+{% endblock extrascripts %}

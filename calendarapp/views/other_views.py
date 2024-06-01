@@ -1,18 +1,16 @@
-# cal/views.py
-
-from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect
-from django.views import generic
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseRedirect, JsonResponse
+from django.views import generic, View
 from django.utils.safestring import mark_safe
 from datetime import timedelta, datetime, date
 import calendar
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
+from django.contrib.auth import get_user_model
 
 from calendarapp.models import EventMember, Event
+from accounts.models import User
 from calendarapp.utils import Calendar
 from calendarapp.forms import EventForm, AddMemberForm
 
@@ -89,20 +87,13 @@ def event_details(request, event_id):
 
 
 def add_eventmember(request, event_id):
-    forms = AddMemberForm()
     if request.method == "POST":
-        forms = AddMemberForm(request.POST)
-        if forms.is_valid():
-            member = EventMember.objects.filter(event=event_id)
-            event = Event.objects.get(id=event_id)
-            if member.count() <= 9:
-                user = forms.cleaned_data["user"]
-                EventMember.objects.create(event=event, user=user)
-                return redirect("calendarapp:calendar")
-            else:
-                print("--------------User limit exceed!-----------------")
-    context = {"form": forms}
-    return render(request, "add_member.html", context)
+        user_id = request.POST.get("user")
+        event = get_object_or_404(Event, id=event_id)
+        user = get_object_or_404(User, id=user_id)
+        EventMember.objects.create(event=event, user=user)
+        return redirect("calendarapp:teacher_events")
+    return redirect("calendarapp:teacher_events")
 
 
 class EventMemberDeleteView(generic.DeleteView):
@@ -143,9 +134,7 @@ class CalendarViewNew(LoginRequiredMixin, generic.View):
             form.save()
             return redirect("calendarapp:calendar")
         context = {"form": forms}
-        return render(request, self.template_name, context)
-
-
+        return render (request, self.template_name, context)
 
 def delete_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -179,3 +168,24 @@ def next_day(request, event_id):
         return JsonResponse({'message': 'Sucess!'})
     else:
         return JsonResponse({'message': 'Error!'}, status=400)
+
+class TeacherEventListView(LoginRequiredMixin, View):
+    login_url = "accounts:signin"
+    template_name = 'calendarapp/teacher_events.html'
+
+    def get(self, request, *args, **kwargs):
+        events = Event.objects.filter(user=request.user)
+        User = get_user_model()
+        users = User.objects.all()  # Получение всех пользователей
+        context = {
+            'events': events,
+            'users': users,
+        }
+        return render(request, self.template_name, context)
+    
+@login_required
+def remove_event_member(request, member_id):
+    member = get_object_or_404(EventMember, id=member_id)
+    event_id = member.event.id
+    member.delete()
+    return redirect('calendarapp:event-detail', event_id=event_id)

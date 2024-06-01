@@ -1,0 +1,45 @@
+{% extends 'studentapp/base/base.html' %}
+{% load static %}
+
+{% block title %}User Details{% endblock title %}
+
+{% block breadcrumb %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="https://img.freepik.com/free-vector/illustration-of-user-avatar-icon_53876-5907.jpg?w=740&t=st=1716310936~exp=1716311536~hmac=21211d8cf3489009a5b18dadb5f7e44028ee0acc3cce9ea0c5374f699ba6df3f" alt="User Image" class="img-fluid rounded-circle mb-3">
+        </div>
+        <div class="col-md-8">
+            <div class="user-info">
+                <h1 class="mb-3">{{ user.first_name }} {{ user.last_name }}</h1>
+                <p class="mb-3"><strong>Email:</strong> {{ user.email }}</p>
+                <p class="mb-3"><strong>Department:</strong> {{ user.department }}</p>
+                <p class="mb-3"><strong>Description:</strong> {{ user.description }}</p>
+                <p class="mb-3"><strong>Date Joined:</strong> {{ user.date_joined }}</p>
+                <p class="mb-3"><strong>Last Updated:</strong> {{ user.last_updated }}</p>
+                <a href="{% url 'chat' user.username %}" class="btn btn-primary mt-4">Написать</a>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Текущие события</h3>
+            <ul class="list-group">
+                {% for event in events %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-2">{{ event.title }}</h4>
+                        <p class="mb-1">{{ event.description }}</p>
+                        <p class="mb-1"><strong>From:</strong> {{ event.start }}</p>
+                        <p class="mb-1"><strong>To:</strong> {{ event.end }}</p>
+                    </div>
+                    <a href="{% url 'student:event_sign_up' event.id %}" class="btn btn-success">Записаться</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item">Нет текущих событий.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumb %}

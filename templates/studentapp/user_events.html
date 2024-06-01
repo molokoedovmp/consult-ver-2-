@@ -1,0 +1,29 @@
+{% extends 'studentapp/base/base.html' %}
+{% load static %}
+
+{% block title %}Мои События{% endblock title %}
+
+{% block breadcrumb %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>События, на которые вы записаны</h3>
+            <ul class="list-group">
+                {% for event_member in events %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-2">{{ event_member.event.title }}</h4>
+                        <p class="mb-1">{{ event_member.event.description }}</p>
+                        <p class="mb-1"><strong>From:</strong> {{ event_member.event.start_time }}</p>
+                        <p class="mb-1"><strong>To:</strong> {{ event_member.event.end_time }}</p>
+                    </div>
+                    <a href="{% url 'student:cancel_event_signup' event_member.event.id %}" class="btn btn-danger">Отменить запись</a>
+                </li>
+                {% empty %}
+                <li class="list-group-item">Нет текущих событий.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumb %}

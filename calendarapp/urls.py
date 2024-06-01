@@ -1,6 +1,8 @@
 from django.urls import path
 
 from . import views
+from .views import TeacherEventListView, remove_event_member
+
 
 app_name = "calendarapp"
 
@@ -28,4 +30,6 @@ urlpatterns = [
         views.RunningEventsListView.as_view(),
         name="running_events",
     ),
+    path("teacher-events/", TeacherEventListView.as_view(), name="teacher_events"),
+    path("remove_member/<int:member_id>/", remove_event_member, name="remove_event_member"),
 ]

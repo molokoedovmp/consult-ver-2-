@@ -3,6 +3,7 @@ from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
+    Group
 )
 from django.utils.translation import gettext_lazy as _
 
@@ -55,10 +56,17 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_("Active"), default=True)
     date_joined = models.DateTimeField(_("Date Joined"), auto_now_add=True)
     last_updated = models.DateTimeField(_("Last Updated"), auto_now=True)
-
+    image = models.ImageField(
+        "Изображение", upload_to='teacher/teacher/%Y/%m/%d', default='default.jpg')
+    description = models.TextField("Описание", blank=True)
+    first_name = models.CharField(_("First name"), max_length=30, blank=True)
+    last_name = models.CharField(_("Last name"), max_length=30, blank=True)
+    department = models.CharField(_("Department"), max_length=100, blank=True)
     objects = UserManager()
 
     USERNAME_FIELD = "email"
 
     def __str__(self):
         return self.email
+
+
