@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 from .views import TeacherEventListView, remove_event_member
+from .views import edit_profile, student_list, student_detail
 
 
 app_name = "calendarapp"
@@ -32,4 +33,7 @@ urlpatterns = [
     ),
     path("teacher-events/", TeacherEventListView.as_view(), name="teacher_events"),
     path("remove_member/<int:member_id>/", remove_event_member, name="remove_event_member"),
+    path('profile/', edit_profile, name='profile'),
+    path('students/', student_list, name='student_list'),
+    path('student/<int:id>/', student_detail, name='student_detail'),
 ]

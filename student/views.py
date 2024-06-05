@@ -7,12 +7,29 @@ from calendarapp.forms import EventForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from calendarapp.forms import UserProfileForm
+from django.utils import timezone
+
 
 class StudentDashboardView(LoginRequiredMixin, View):
     template_name = "studentapp/student.html"
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
+    
+@login_required
+def student_dashboard(request):
+    # Получение данных о событиях, на которые записан студент
+    user_events = EventMember.objects.filter(user=request.user).select_related('event')
+    
+    upcoming_events = [event_member.event for event_member in user_events.filter(event__start_time__gte=timezone.now()).order_by('event__start_time')]
+    past_events = [event_member.event for event_member in user_events.filter(event__start_time__lt=timezone.now()).order_by('-event__start_time')]
+    
+    context = {
+        'upcoming_events': upcoming_events,
+        'past_events': past_events,
+    }
+    return render(request, 'studentapp/dashboard.html', context)
 
 class StudentCalendarView(LoginRequiredMixin, View):
     template_name = "student/student_calendar.html"
@@ -35,8 +52,8 @@ class StaffListView(ListView):
         return User.objects.filter(is_staff=True)
 
 def user_detail(request, id):
-    user = get_object_or_404(User, id=id)
-    events = Event.objects.filter(user=user)
+    profile_user = get_object_or_404(User, id=id)
+    events = Event.objects.filter(user=profile_user, start_time__gte=timezone.now()).order_by('start_time')
     event_list = []
     for event in events:
         event_list.append(
@@ -49,7 +66,7 @@ def user_detail(request, id):
             }
         )
     context = {
-        'user': user,
+        'profile_user': profile_user,
         'events': event_list,
     }
     return render(request, 'studentapp/user_detail.html', context)
@@ -79,3 +96,15 @@ def cancel_event_signup(request, event_id):
     event_member = get_object_or_404(EventMember, event_id=event_id, user=request.user)
     event_member.delete()
     return redirect(reverse('student:user_events'))
+
+@login_required
+def edit_profile(request):
+    user = request.user
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('student:profile')
+    else:
+        form = UserProfileForm(instance=user)
+    return render(request, 'studentapp/profile.html', {'form': form})

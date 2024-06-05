@@ -1,0 +1,34 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Список студентов{% endblock title %}
+
+{% block breadcrumb %}
+<div class="container py-4">
+    <h1 class="mb-4">Список студентов</h1>
+    <form method="GET" action="{% url 'calendarapp:student_list' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Поиск по имени, фамилии или email" value="{{ request.GET.q|default:'' }}">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Поиск</button>
+            </div>
+        </div>
+    </form>
+    <ul class="list-group">
+        {% for student in students %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <img src="{{ student.image.url }}" alt="{{ student.first_name }}" class="rounded-circle mr-3" width="40" height="40">
+                    <a href="{% url 'calendarapp:student_detail' student.id %}" class="text-dark">
+                        <strong>{{ student.first_name }} {{ student.last_name }}</strong><br>
+                        {{ student.email }}
+                    </a>
+                </div>
+                <span class="badge badge-primary badge-pill">Студент</span>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Нет доступных студентов.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

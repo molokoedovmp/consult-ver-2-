@@ -1,0 +1,25 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Student Details{% endblock title %}
+
+{% block breadcrumb %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="{{ profile_user.image.url }}" alt="User Image" class="img-fluid rounded-circle mb-3">
+        </div>
+        <div class="col-md-8">
+            <div class="user-info">
+                <h1 class="mb-3">{{ profile_user.first_name }} {{ profile_user.last_name }}</h1>
+                <p class="mb-3"><strong>Email:</strong> {{ profile_user.email }}</p>
+                <p class="mb-3"><strong>Department:</strong> {{ profile_user.department }}</p>
+                <p class="mb-3"><strong>Description:</strong> {{ profile_user.description }}</p>
+                <p class="mb-3"><strong>Date Joined:</strong> {{ profile_user.date_joined }}</p>
+                <p class="mb-3"><strong>Last Updated:</strong> {{ profile_user.last_updated }}</p>
+                <a href="{% url 'chat' profile_user.email %}" class="btn btn-primary mt-4">Написать</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock breadcrumb %}

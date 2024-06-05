@@ -20,15 +20,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <!-- Main CSS-->
         <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'css/sidebar-style.css' %}" />
         <!-- Font-icon css-->
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
         {% block extracss %}
         {% endblock extracss %}
     </head>
     <body class="app sidebar-mini">
+
         <!-- Navbar-->
         <header class="app-header">
-            <a class="app-header__logo" href="#">Event Calendar</a>
             <!-- Sidebar toggle button-->
             <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
             <!-- Navbar Right Menu-->
@@ -114,60 +115,47 @@
                         </div>
                         <li class="app-notification__footer"><a href="#">See all notifications.</a></li>
                     </ul>
-                </li>
-                <!-- User Menu-->
-                <li class="dropdown">
-                    <a class="app-nav__item" href="#" data-toggle="dropdown" aria-label="Open Profile Menu"><i class="fa fa-user fa-lg"></i></a>
-                    <ul class="dropdown-menu settings-menu dropdown-menu-right">
-                        <li>
-                            <a class="dropdown-item" href="#"><i class="fa fa-cog fa-lg"></i> Settings</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#"><i class="fa fa-user fa-lg"></i> Profile</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{% url 'accounts:signout' %}"><i class="fa fa-sign-out fa-lg"></i> Sign Out</a>
-                        </li>
-                    </ul>
-                </li>
+                </li>                
             </ul>
         </header>
         <!-- Sidebar menu-->
         <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
         <aside class="app-sidebar">
             <div class="app-sidebar__user">
-                <img class="app-sidebar__user-avatar" src="https://img.freepik.com/free-vector/illustration-of-user-avatar-icon_53876-5907.jpg?w=740&t=st=1716310936~exp=1716311536~hmac=21211d8cf3489009a5b18dadb5f7e44028ee0acc3cce9ea0c5374f699ba6df3f" alt="User Image" height="50px" width="50px"/>
-                <div>
-                    <p class="app-sidebar__user-name">Преподаватель</p>
-                    <p class="app-sidebar__user-designation">Software Engineer</p>
-                </div>
+                <a class="app-sidebar__item" href="#" data-toggle="dropdown">
+                    <img src="{{ user.image.url }}" alt="{{ user.first_name }} {{ user.last_name }}" class="user-image">
+                    <span class="app-menu__label user-name">{{ user.first_name }} {{ user.last_name }}</span>
+                </a>
+                <ul class="dropdown-menu settings-menu dropdown-menu-right">
+                    <li><a class="dropdown-item" href="#">Настройки</a></li>
+                    <li><a class="dropdown-item" href="{% url 'calendarapp:profile' %}">Профиль</a></li>
+                    <li><a class="dropdown-item" href="{% url 'accounts:signout' %}">Выход</a></li>
+                </ul>
             </div>
             <ul class="app-menu">
                 <li>
-                    <a class="app-menu__item active" href="{% url 'dashboard' %}"><i class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></a>
+                    <a class="app-menu__item" href="{% url 'dashboard' %}"><i class="app-menu__icon fa fa-home"></i><span class="app-menu__label">Главная</span></a>
                 </li>
                 <li>
-                    <a class="app-menu__item" href="{% url 'calendarapp:calendar' %}"><i class="app-menu__icon fa fa-calendar"></i><span class="app-menu__label">Calendar</span></a>
-                </li>
-                <li class="treeview">
-                    <a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon fa fa-th-list"></i><span class="app-menu__label">Events</span><i class="treeview-indicator fa fa-angle-right"></i></a>
-                    <ul class="treeview-menu">
-                        <li>
-                            <a class="treeview-item" href="{% url 'calendarapp:running_events' %}"><i class="icon fa fa-circle-o"></i> Running</a>
-                        </li>
-                        <li>
-                            <a class="treeview-item" href="{% url 'calendarapp:running_events' %}"><i class="icon fa fa-circle-o"></i> Upcoming</a>
-                        </li>
-                        <li>
-                            <a class="treeview-item" href="{% url 'calendarapp:all_events' %}"><i class="icon fa fa-circle-o"></i> All</a>
-                        </li>
-                    </ul>
+                    <a class="app-menu__item" href="{% url 'calendarapp:calendar' %}"><i class="app-menu__icon fa fa-calendar"></i><span class="app-menu__label">Календарь</span></a>
                 </li>
                 <li>
-                    <a class="app-menu__item" href="{% url 'calendarapp:teacher_events' %}"><i class="app-menu__icon fa fa-file-code-o"></i><span class="app-menu__label">События</span></a>
+                    <a class="app-menu__item" href="{% url 'calendarapp:all_events' %}"><i class="app-menu__icon fa fa-list"></i><span class="app-menu__label">События</span></a>
                 </li>
                 <li>
-                    <a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-file-code-o"></i><span class="app-menu__label">Docs</span></a>
+                    <a class="app-menu__item" href="{% url 'calendarapp:teacher_events' %}"><i class="app-menu__icon fa fa-cog"></i><span class="app-menu__label">Управления событиями</span></a>
+                </li>
+                <li>
+                    <a class="app-menu__item" href="{% url 'calendarapp:student_list' %}">
+                        <i class="app-menu__icon fa fa-users"></i>
+                        <span class="app-menu__label">Студенты</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="app-menu__item" href="{% url 'chat_list' %}"><i class="app-menu__icon fa fa-comments"></i><span class="app-menu__label">Чаты</span></a>
+                </li>
+                <li>
+                    <a class="app-menu__item" href="#"><i class="app-menu__icon fa fa-file-text"></i><span class="app-menu__label">Отчётность</span></a>
                 </li>
             </ul>
         </aside>

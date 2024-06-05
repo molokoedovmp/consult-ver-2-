@@ -1,0 +1,42 @@
+{% extends 'studentapp/base/base.html' %}
+{% load static %}
+
+{% block title %}Все чаты{% endblock title %}
+
+{% block breadcrumb %}
+<div class="container py-4">
+    <h1 class="mb-4">Все чаты</h1>
+    <form method="GET" action="{% url 'chat_list' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="q" class="form-control" placeholder="Поиск по email, имени или фамилии" value="{{ query|default:'' }}">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Поиск</button>
+            </div>
+        </div>
+    </form>
+    <ul class="list-group">
+        {% for dialog in dialogs %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    {% if dialog.user1 == request.user %}
+                        <img src="{{ dialog.user2.image.url }}" alt="{{ dialog.user2.first_name }}" class="rounded-circle mr-3" width="40" height="40">
+                        <a href="{% url 'chat' dialog.user2.email %}" class="text-dark">
+                            <strong>{{ dialog.user2.first_name }} {{ dialog.user2.last_name }}</strong><br>
+                            {{ dialog.user2.email }}
+                        </a>
+                    {% else %}
+                        <img src="{{ dialog.user1.image.url }}" alt="{{ dialog.user1.first_name }}" class="rounded-circle mr-3" width="40" height="40">
+                        <a href="{% url 'chat' dialog.user1.email %}" class="text-dark">
+                            <strong>{{ dialog.user1.first_name }} {{ dialog.user1.last_name }}</strong><br>
+                            {{ dialog.user1.email }}
+                        </a>
+                    {% endif %}
+                </div>
+                <span class="badge badge-primary badge-pill">{{ dialog.messages.count }} сообщений</span>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Нет доступных чатов.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

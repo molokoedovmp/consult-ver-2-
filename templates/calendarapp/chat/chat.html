@@ -1,0 +1,61 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Чат{% endblock title %}
+
+{% block breadcrumb %}
+<h1 class="mb-4"><i class="fa fa-comments"></i> Чат с {{ chat_user.first_name }} {{ chat_user.last_name }}</h1>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="container py-4 chat-container">
+    <div class="card shadow-sm">
+        <div class="card-body chat-box" style="max-height: 60vh; overflow-y: auto;">
+            {% for message in messages %}
+                <div class="message-container d-flex {% if message.sender == request.user %}justify-content-end{% else %}justify-content-start{% endif %} mb-2">
+                    <div class="message p-3 {% if message.sender == request.user %}bg-sender{% else %}bg-receiver{% endif %} rounded">
+                        <strong>{{ message.sender.first_name }} {{ message.sender.last_name }}:</strong>
+                        <p class="mb-1">{{ message.text }}</p>
+                        <small class="timestamp d-block text-right">{{ message.timestamp|date:"d M Y H:i" }}</small>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="card-footer">
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-group">
+                    <textarea name="message" rows="1" class="form-control" placeholder="Введите сообщение..." required></textarea>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chat-box {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    .message-container {
+        display: flex;
+    }
+    .message {
+        padding: 10px 15px;
+        border-radius: 10px;
+        max-width: 75%;
+    }
+    .timestamp {
+        font-size: 0.8em;
+        color: #666;
+    }
+    .bg-sender {
+        background-color: #d1ecf1 !important; /* Светло-голубой для отправителя */
+        color: #0c5460 !important; /* Цвет текста для лучшего контраста */
+    }
+    .bg-receiver {
+        background-color: #e2f0fb !important; /* Светло-голубой для получателя */
+        color: #083b5d !important; /* Цвет текста для лучшего контраста */
+    }
+</style>
+{% endblock %}

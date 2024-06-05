@@ -1,25 +1,44 @@
 from django.contrib import admin
-from calendarapp import models
+from calendarapp.models import Event, EventMember
 
-
-@admin.register(models.Event)
+@admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    model = models.Event
-    list_display = [
-        "id",
-        "title",
-        "user",
-        "is_active",
-        "is_deleted",
-        "created_at",
-        "updated_at",
-    ]
-    list_filter = ["is_active", "is_deleted"]
-    search_fields = ["title"]
+    list_display = ['title', 'user', 'start_time', 'end_time']
+    search_fields = ['title', 'user__email']
+    list_filter = ['start_time', 'end_time']
 
+    def has_module_permission(self, request):
+        return request.user.is_staff
 
-@admin.register(models.EventMember)
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_staff
+
+    def has_add_permission(self, request):
+        return request.user.is_staff
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_staff
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_staff
+
+@admin.register(EventMember)
 class EventMemberAdmin(admin.ModelAdmin):
-    model = models.EventMember
-    list_display = ["id", "event", "user", "created_at", "updated_at"]
-    list_filter = ["event"]
+    list_display = ['event', 'user']
+    search_fields = ['event__title', 'user__email']
+    list_filter = ['event']
+
+    def has_module_permission(self, request):
+        return request.user.is_staff
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_staff
+
+    def has_add_permission(self, request):
+        return request.user.is_staff
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_staff
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_staff
