@@ -59,7 +59,8 @@ CHANNEL_LAYERS = {
     },
 }
 
-ASGI_APPLICATION = 'eventcalendar.routing.application'
+WSGI_APPLICATION = 'eventcalendar.wsgi.app'
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
