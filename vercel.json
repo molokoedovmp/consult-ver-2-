@@ -3,11 +3,11 @@
   "builds": [
     {
       "src": "eventcalendar/wsgi.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "build_files.sh",
-      "use": "@vercel/bash"
+      "use": "@vercel/python",
+      "config": {
+        "installCommand": "pip install -r requirements.txt",
+        "buildCommand": "python manage.py migrate && python manage.py collectstatic --noinput"
+      }
     }
   ],
   "routes": [
