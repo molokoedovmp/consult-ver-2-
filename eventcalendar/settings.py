@@ -7,7 +7,7 @@ SECRET_KEY = "i8e1s3!_(fjsiv%1pn3sb3o=s)!p*nzwh1$gp5-l&%nb!d=y_s"
 DEBUG = True
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
