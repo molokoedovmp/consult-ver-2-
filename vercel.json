@@ -4,16 +4,18 @@
     {
       "src": "eventcalendar/wsgi.py",
       "use": "@vercel/python",
-      "config": {
-        "installCommand": "pip install -r requirements.txt",
-        "buildCommand": "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput"
-      }
+      "config": {"maxLambdaSize": "15mb","runtime": "python3.9" }
+    },
+    {
+      "src": "build_files.sh",
+      "use": "@vercel/static_build",
+      "config": { "distDir": "staticfiles_build" }  
     }
   ],
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/staticfiles/$1"
+      "dest": "/static/$1"
     },
     {
       "src": "/(.*)",
